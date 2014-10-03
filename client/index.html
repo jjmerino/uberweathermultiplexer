@@ -24,6 +24,38 @@
       <link rel="stylesheet" href="app/main/main.css">
       <!-- endinjector -->
     <!-- endbuild -->
+    <link rel="stylesheet" href="styles.css">
+    <link href='http://fonts.googleapis.com/css?family=Codystar' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
+    <script src="jquery.js">
+
+    handleSubmit: function(){
+      var data = {
+        name: "name",
+        lat: 37.783028,
+        lng: 122.432936,
+        userName: "oleg",
+        phone: 9162848037,
+        time: '10:00',
+        timeAhead: 30
+      };
+
+        $.ajax({
+          type: "POST",
+          url: "ubering.herokuApp.com/Api/Alarms",
+          data: JSON.stringify(data),
+          contentType: 'application.json'
+        });
+        $('.submit').on('click', function(){
+          $('#name').val('');
+        };
+    }
+
+    $('.submit').on('click', function(){
+      handleSubmit();
+    });
+
+    </script>
   </head>
   <body ng-app="uberingApp">
     <!--[if lt IE 7]>
@@ -33,8 +65,12 @@
     <!-- Add your site or application content here -->
     <!--<div ui-view=""></div>-->
         <!--PASTE YOUR PLAIN HTML HERE :D-->
-
-    Test! please use the API!
+  	<span id="title">UBER Alarm</span>
+    <div id="container">
+  	<input id="name" type="text" placeholder="Enter Your Name" value=''></input>
+    <input id="address" type="text" placeholder="Enter the address of your destination" value=''></input>
+    <input class="button" type='submit'> 
+  	</div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
