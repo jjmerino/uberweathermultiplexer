@@ -29,7 +29,8 @@ require('./routes')(app);
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
-
+var sent = 0;
+var sentS = {};
 var pseudoCron = function(){
 
   Alarm.find(function (err, alarms) {
@@ -37,19 +38,25 @@ var pseudoCron = function(){
     if(err) { return handleError(res, err); }
 
     for(var i = 0; i < alarms.length; i++){
-
-// Twilio Credentials
+      var alarm = alarms[i];
+      // Twilio Credentials
       var accountSid = localconf.TWILIO_ID;
       var authToken = localconf.TWILIO_TOKEN;
       //require the Twilio module and create a REST client
       var client = require('twilio')(accountSid, authToken);
+      if(sentS[alarm._id]===true){
 
+         break;
+      }
+      sentS[alarm._id] = true;
+      console.log(alarm);
       client.messages.create({
         to: "+19162848037",
         from: "+14422442379",
         body: "You need to take your uber man!! I wont say this again!"
       }, function(err, message) {
-        console.log(message.sid);
+        console.log(message);
+        sent++;
       });
       break;
     }
@@ -64,7 +71,7 @@ var pseudoCron = function(){
 
 }
 pseudoCron();
-setInterval(pseudoCron,60000);
+setInterval(pseudoCron,1000);
 
 // Expose app
 exports = module.exports = app;

@@ -8,6 +8,11 @@ var errors = require('./components/errors');
 
 module.exports = function(app) {
 
+  app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+  });
   // Insert routes below
   app.use('/api/alarms', require('./api/alarm'));
   app.use('/api/things', require('./api/thing'));
