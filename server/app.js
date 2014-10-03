@@ -10,6 +10,8 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var express = require('express');
 var mongoose = require('mongoose');
 var config = require('./config/environment');
+var localconf = require('./config/local.env')
+var Alarm = require('./api/alarm/alarm.model');
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -27,6 +29,42 @@ require('./routes')(app);
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
+
+var pseudoCron = function(){
+
+  Alarm.find(function (err, alarms) {
+    // Twilio Credentials
+    if(err) { return handleError(res, err); }
+
+    for(var i = 0; i < alarms.length; i++){
+
+// Twilio Credentials
+      var accountSid = localconf.TWILIO_ID;
+      var authToken = localconf.TWILIO_TOKEN;
+      //require the Twilio module and create a REST client
+      var client = require('twilio')(accountSid, authToken);
+
+      client.messages.create({
+        to: "+19162848037",
+        from: "+14422442379",
+        body: "You need to take your uber man!! I wont say this again!"
+      }, function(err, message) {
+        console.log(message.sid);
+      });
+      break;
+    }
+
+  });
+
+
+// Check status every minute
+
+
+// Alert if necesa
+
+}
+pseudoCron();
+setInterval(pseudoCron,60000);
 
 // Expose app
 exports = module.exports = app;
